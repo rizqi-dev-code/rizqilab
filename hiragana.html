@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hiragana — RizqiLab</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="hiragana" data-script="hiragana">
+<header class="site" id="site-header"></header>
+
+<main>
+  <p class="eyebrow">Tabel referensi</p>
+  <h1>Hiragana ひらがな</h1>
+  <p class="lead">46 karakter dasar (gojūon), ditambah dakuten, handakuten, dan yōon. Klik satu kotak untuk menandainya sebagai sudah dikuasai — tanda titik merah akan muncul di pojok kiri atas.</p>
+
+  <div class="filter-bar">
+    <button data-filter="all" class="active">Semua</button>
+    <button data-filter="basic">Dasar</button>
+    <button data-filter="dakuten">Dakuten゛</button>
+    <button data-filter="handakuten">Handakuten゜</button>
+    <button data-filter="youon">Yōon 拗音</button>
+  </div>
+
+  <div id="kana-table"></div>
+</main>
+
+<footer class="site" id="site-footer"></footer>
+<script src="js/data.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/table.js"></script>
+</body>
+</html>

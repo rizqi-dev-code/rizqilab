@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cara Menulis — RizqiLab</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="tulis">
+<header class="site" id="site-header"></header>
+
+<main>
+  <p class="eyebrow">Urutan goresan</p>
+  <h1>Cara menulis kana</h1>
+  <p class="lead">Pilih satu karakter, lihat animasinya, lalu coba jiplak sendiri di kotak sebelah kanan. Sistem akan memberi tahu kalau urutan atau arah goresanmu meleset.</p>
+
+  <div class="write-layout">
+    <div>
+      <div class="picker-tabs" id="script-tabs">
+        <button class="chip active" data-script="hiragana">Hiragana</button>
+        <button class="chip" data-script="katakana">Katakana</button>
+      </div>
+      <div class="picker-tabs" id="type-tabs">
+        <button class="chip active" data-type="basic">Dasar</button>
+        <button class="chip" data-type="dakuten">Dakuten &amp; Handakuten</button>
+      </div>
+      <div class="picker-grid" id="picker-grid"></div>
+      <p class="note-box">Karakter yōon (きゃ, しゃ, dst.) adalah gabungan dua karakter &mdash; komponen kecilnya (ゃ ゅ ょ) dan karakter besarnya bisa kamu latih satu-satu di sini, lalu digabung saat menulis.</p>
+    </div>
+
+    <aside class="writer-panel">
+      <div class="writer-current" id="writer-current">あ &middot; a</div>
+      <div id="writer-target"></div>
+      <div class="writer-buttons">
+        <button class="btn" id="btn-animate">Putar animasi</button>
+        <button class="btn primary" id="btn-quiz">Mode latihan</button>
+      </div>
+      <div class="writer-status" id="writer-status">Klik &ldquo;Putar animasi&rdquo; untuk melihat urutan goresan.</div>
+      <div class="writer-nav">
+        <button class="icon-btn" id="btn-prev" title="Sebelumnya">‹</button>
+        <button class="icon-btn" id="btn-next" title="Berikutnya">›</button>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer class="site" id="site-footer"></footer>
+<script src="js/data.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/vendor/hanzi-writer.min.js"></script>
+<script>
+(function () {
+  let script = 'hiragana';
+  let type = 'basic';
+  let list = [];
+  let currentIndex = 0;
+  let writer = null;
+  let quizMode = false;
+
+  const grid = document.getElementById('picker-grid');
+  const currentLabel = document.getElementById('writer-current');
+  const statusEl = document.getElementById('writer-status');
+  const target = document.getElementById('writer-target');
+
+  function charDataLoader(char, onComplete) {
+    fetch('data/strokes/' + encodeURIComponent(char) + '.json')
+      .then(res => res.json())
+      .then(onComplete)
+      .catch(() => setStatus('Data goresan untuk karakter ini tidak ditemukan.', 'mistake'));
+  }
+
+  function setStatus(msg, cls) {
+    statusEl.textContent = msg;
+    statusEl.className = 'writer-status' + (cls ? ' ' + cls : '');
+  }
+
+  function buildList() {
+    const rows = script === 'hiragana' ? HIRAGANA : KATAKANA;
+    let out = [];
+    rows.forEach(row => {
+      if (type === 'basic' && row.type !== 'basic') return;
+      if (type === 'dakuten' && row.type !== 'dakuten' && row.type !== 'handakuten') return;
+      row.chars.forEach(c => out.push(c));
+    });
+    return out;
+  }
+
+  function renderGrid() {
+    grid.innerHTML = '';
+    list.forEach((c, i) => {
+      const cell = document.createElement('button');
+      cell.type = 'button';
+      cell.className = 'picker-cell';
+      cell.textContent = c.k;
+      cell.title = c.r;
+      if (i === currentIndex) cell.classList.add('selected');
+      cell.addEventListener('click', () => selectChar(i));
+      grid.appendChild(cell);
+    });
+  }
+
+  function loadWriter(char) {
+    target.innerHTML = '';
+    writer = HanziWriter.create('writer-target', char, {
+      width: 240,
+      height: 240,
+      padding: 10,
+      showOutline: true,
+      strokeAnimationSpeed: 1,
+      delayBetweenStrokes: 300,
+      strokeColor: '#1B1F2A',
+      outlineColor: '#c9c2ae',
+      drawingColor: '#B23A2E',
+      charDataLoader: charDataLoader
+    });
+  }
+
+  function selectChar(i) {
+    currentIndex = i;
+    quizMode = false;
+    const c = list[i];
+    currentLabel.textContent = c.k + ' · ' + c.r;
+    setStatus('Klik "Putar animasi" untuk melihat urutan goresan.');
+    loadWriter(c.k);
+    renderGrid();
+  }
+
+  function initList() {
+    list = buildList();
+    currentIndex = 0;
+    if (list.length === 0) return;
+    selectChar(0);
+  }
+
+  document.querySelectorAll('#script-tabs .chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#script-tabs .chip').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      script = btn.dataset.script;
+      initList();
+    });
+  });
+  document.querySelectorAll('#type-tabs .chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#type-tabs .chip').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      type = btn.dataset.type;
+      initList();
+    });
+  });
+
+  document.getElementById('btn-animate').addEventListener('click', () => {
+    quizMode = false;
+    setStatus('Memutar animasi urutan goresan…');
+    loadWriter(list[currentIndex].k);
+    setTimeout(() => {
+      if (writer) writer.animateCharacter({
+        onComplete: () => setStatus('Selesai. Klik lagi untuk mengulang, atau coba Mode latihan.')
+      });
+    }, 50);
+  });
+
+  document.getElementById('btn-quiz').addEventListener('click', () => {
+    quizMode = true;
+    loadWriter(list[currentIndex].k);
+    setStatus('Jiplak karakternya sesuai urutan goresan yang benar.');
+    setTimeout(() => {
+      if (writer) writer.quiz({
+        onCorrectStroke: () => setStatus('Goresan benar, lanjutkan.', 'ok'),
+        onMistake: () => setStatus('Arah atau posisi goresan kurang tepat, coba lagi.', 'mistake'),
+        onComplete: () => setStatus('Selesai! Semua goresan benar.', 'ok')
+      });
+    }, 50);
+  });
+
+  document.getElementById('btn-next').addEventListener('click', () => {
+    selectChar((currentIndex + 1) % list.length);
+  });
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    selectChar((currentIndex - 1 + list.length) % list.length);
+  });
+
+  initList();
+})();
+</script>
+</body>
+</html>

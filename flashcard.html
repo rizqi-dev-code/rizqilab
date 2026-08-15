@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashcard — RizqiLab</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="flashcard">
+<header class="site" id="site-header"></header>
+
+<main>
+  <p class="eyebrow">Mode hafalan</p>
+  <h1>Flashcard</h1>
+  <p class="lead">Tebak dulu cara bacanya di dalam kepala, baru klik kartu untuk membalik dan memeriksa jawaban.</p>
+
+  <div class="filter-bar">
+    <button data-set="hiragana" class="active">Hiragana</button>
+    <button data-set="katakana">Katakana</button>
+    <button data-set="both">Campuran</button>
+  </div>
+
+  <div class="flash-stage">
+    <div class="flash-meta" id="flash-meta">Kartu 1 / 46</div>
+
+    <div class="flashcard" id="flashcard">
+      <div class="flashcard-inner">
+        <div class="flashcard-face flashcard-front">
+          <span class="glyph" id="flash-glyph">あ</span>
+        </div>
+        <div class="flashcard-face flashcard-back">
+          <span class="romaji" id="flash-romaji">a</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flash-controls">
+      <button class="icon-btn" id="btn-prev" title="Sebelumnya">‹</button>
+      <button class="btn" id="btn-mastered">Tandai dikuasai</button>
+      <button class="icon-btn" id="btn-next" title="Berikutnya">›</button>
+    </div>
+
+    <div class="flash-controls">
+      <button class="btn ghost" id="btn-shuffle">Acak kartu</button>
+      <button class="btn ghost" id="btn-reset">Ulangi dari awal</button>
+    </div>
+  </div>
+</main>
+
+<footer class="site" id="site-footer"></footer>
+<script src="js/data.js"></script>
+<script src="js/layout.js"></script>
+<script>
+(function () {
+  const storeKey = 'kanaLab_flash_mastered';
+  const setBtns = document.querySelectorAll('.filter-bar button[data-set]');
+  const cardEl = document.getElementById('flashcard');
+  const glyphEl = document.getElementById('flash-glyph');
+  const romajiEl = document.getElementById('flash-romaji');
+  const metaEl = document.getElementById('flash-meta');
+
+  let deck = [];
+  let index = 0;
+  let currentSet = 'hiragana';
+
+  function getMastered() {
+    try { return new Set(JSON.parse(localStorage.getItem(storeKey) || '[]')); }
+    catch (e) { return new Set(); }
+  }
+  function saveMastered(set) {
+    try { localStorage.setItem(storeKey, JSON.stringify([...set])); } catch (e) {}
+  }
+  let mastered = getMastered();
+
+  function buildDeck(setName) {
+    if (setName === 'hiragana') return [...HIRAGANA_FLAT.map(c => ({ ...c, script: 'hiragana' }))];
+    if (setName === 'katakana') return [...KATAKANA_FLAT.map(c => ({ ...c, script: 'katakana' }))];
+    return [
+      ...HIRAGANA_FLAT.map(c => ({ ...c, script: 'hiragana' })),
+      ...KATAKANA_FLAT.map(c => ({ ...c, script: 'katakana' }))
+    ];
+  }
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function showCard() {
+    cardEl.classList.remove('flipped');
+    const c = deck[index];
+    glyphEl.textContent = c.k;
+    romajiEl.textContent = c.r;
+    const id = c.script + '_' + c.k;
+    metaEl.textContent = `Kartu ${index + 1} / ${deck.length}${mastered.has(id) ? '  •  sudah dikuasai' : ''}`;
+  }
+
+  function initSet(setName) {
+    currentSet = setName;
+    deck = buildDeck(setName);
+    index = 0;
+    showCard();
+  }
+
+  setBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      setBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      initSet(btn.dataset.set);
+    });
+  });
+
+  cardEl.addEventListener('click', () => cardEl.classList.toggle('flipped'));
+
+  document.getElementById('btn-next').addEventListener('click', () => {
+    index = (index + 1) % deck.length;
+    showCard();
+  });
+  document.getElementById('btn-prev').addEventListener('click', () => {
+    index = (index - 1 + deck.length) % deck.length;
+    showCard();
+  });
+  document.getElementById('btn-shuffle').addEventListener('click', () => {
+    deck = shuffle(deck);
+    index = 0;
+    showCard();
+  });
+  document.getElementById('btn-reset').addEventListener('click', () => initSet(currentSet));
+  document.getElementById('btn-mastered').addEventListener('click', () => {
+    const c = deck[index];
+    const id = c.script + '_' + c.k;
+    if (mastered.has(id)) mastered.delete(id); else mastered.add(id);
+    saveMastered(mastered);
+    showCard();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') document.getElementById('btn-next').click();
+    if (e.key === 'ArrowLeft') document.getElementById('btn-prev').click();
+    if (e.key === ' ') { e.preventDefault(); cardEl.classList.toggle('flipped'); }
+  });
+
+  initSet('hiragana');
+})();
+</script>
+</body>
+</html>

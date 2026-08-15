@@ -1,0 +1,735 @@
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  --ink: #1B1F2A;
+  --ink-soft: #3C4356;
+  --paper: #E9E4D6;
+  --paper-light: #F4F0E5;
+  --paper-line: rgba(27, 31, 42, 0.14);
+  --hanko: #B23A2E;
+  --hanko-soft: rgba(178, 58, 46, 0.12);
+  --aizome: #35507A;
+  --aizome-soft: rgba(53, 80, 122, 0.12);
+  --kinpaku: #A9803F;
+  --radius: 3px;
+  --max-w: 920px;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  background-image:
+    linear-gradient(var(--paper-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--paper-line) 1px, transparent 1px);
+  background-size: 28px 28px;
+  color: var(--ink);
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+}
+
+a { color: inherit; }
+
+/* ---------- Header / Nav ---------- */
+header.site {
+  border-bottom: 2px solid var(--ink);
+  background: var(--paper-light);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.nav-wrap {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.brand .glyph {
+  font-family: 'Shippori Mincho', serif;
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: var(--hanko);
+}
+
+.brand .word {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+nav.main {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+nav.main a {
+  text-decoration: none;
+  font-size: 0.92rem;
+  padding: 7px 12px;
+  border-radius: var(--radius);
+  color: var(--ink-soft);
+  border: 1px solid transparent;
+}
+
+nav.main a:hover { border-color: var(--paper-line); color: var(--ink); }
+nav.main a.active {
+  color: var(--hanko);
+  border-color: var(--hanko);
+  background: var(--hanko-soft);
+  font-weight: 600;
+}
+
+/* ---------- Layout shell ---------- */
+main {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+}
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--hanko);
+  margin: 0 0 8px;
+}
+
+h1 {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 2.1rem;
+  margin: 0 0 10px;
+  line-height: 1.35;
+}
+
+h2 {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 1.4rem;
+  margin: 0 0 14px;
+}
+
+p.lead {
+  max-width: 60ch;
+  color: var(--ink-soft);
+}
+
+footer.site {
+  border-top: 2px solid var(--ink);
+  background: var(--paper-light);
+  padding: 24px 20px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+/* ---------- Home page ---------- */
+.hero {
+  display: grid;
+  gap: 40px;
+  padding-top: 12px;
+}
+
+.path-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.path-card {
+  display: block;
+  text-decoration: none;
+  color: var(--ink);
+  background: var(--paper-light);
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius);
+  padding: 22px;
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.path-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 0 var(--paper-line);
+}
+
+.path-card .sample {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 2.4rem;
+  color: var(--hanko);
+  margin-bottom: 10px;
+}
+
+.path-card h3 {
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+}
+
+.path-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.tool-card {
+  text-decoration: none;
+  color: var(--ink);
+  border: 1px dashed var(--paper-line);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  font-size: 0.92rem;
+}
+
+.tool-card b { display: block; font-size: 1rem; margin-bottom: 4px; color: var(--aizome); }
+
+/* ---------- Genkouyoushi kana card ---------- */
+.row-group { margin-bottom: 34px; }
+
+.row-group h3 {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 1.05rem;
+  margin: 0 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.row-group .tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+  border: 1px solid var(--paper-line);
+  border-radius: 999px;
+  padding: 2px 9px;
+  text-transform: uppercase;
+}
+
+.kana-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 10px;
+}
+
+.kana-cell {
+  aspect-ratio: 1 / 1;
+  background: var(--paper-light);
+  border: 1.5px solid var(--ink);
+  border-radius: var(--radius);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+}
+
+.kana-cell::before,
+.kana-cell::after {
+  content: "";
+  position: absolute;
+  background: var(--paper-line);
+}
+.kana-cell::before { left: 50%; top: 8%; bottom: 8%; width: 1px; }
+.kana-cell::after { top: 50%; left: 8%; right: 8%; height: 1px; }
+
+.kana-cell .glyph {
+  font-family: 'Shippori Mincho', serif;
+  font-weight: 700;
+  font-size: 1.9rem;
+  z-index: 1;
+}
+
+.kana-cell .romaji {
+  position: absolute;
+  bottom: 4px;
+  right: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--hanko);
+  z-index: 1;
+  background: var(--paper-light);
+  padding: 0 2px;
+}
+
+.kana-cell.mastered { border-color: var(--hanko); }
+.kana-cell.mastered .stamp {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--hanko);
+  z-index: 1;
+}
+
+/* ---------- Filter bar ---------- */
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 20px 0 30px;
+}
+
+.filter-bar button {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  padding: 8px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--ink);
+  background: var(--paper-light);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.filter-bar button.active {
+  background: var(--ink);
+  color: var(--paper-light);
+}
+
+/* ---------- Flashcard ---------- */
+.flash-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  margin-top: 20px;
+}
+
+.flash-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+}
+
+.flashcard {
+  width: 240px;
+  height: 240px;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.flashcard-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s;
+  transform-style: preserve-3d;
+}
+
+.flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+
+.flashcard-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--paper-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.flashcard-face::before,
+.flashcard-face::after {
+  content: "";
+  position: absolute;
+  background: var(--paper-line);
+}
+.flashcard-face::before { left: 50%; top: 10%; bottom: 10%; width: 1px; }
+.flashcard-face::after { top: 50%; left: 10%; right: 10%; height: 1px; }
+
+.flashcard-face .glyph {
+  font-family: 'Shippori Mincho', serif;
+  font-weight: 700;
+  font-size: 4.4rem;
+  z-index: 1;
+}
+
+.flashcard-face .romaji {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--hanko);
+  font-size: 1.6rem;
+  z-index: 1;
+}
+
+.flashcard-back { transform: rotateY(180deg); }
+
+.flash-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn {
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding: 10px 18px;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--ink);
+  background: var(--paper-light);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.btn:hover { background: var(--ink); color: var(--paper-light); }
+
+.btn.primary {
+  background: var(--hanko);
+  border-color: var(--hanko);
+  color: var(--paper-light);
+}
+.btn.primary:hover { background: #8f2e24; }
+
+.btn.ghost { border-style: dashed; }
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink);
+  background: var(--paper-light);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.icon-btn:hover { background: var(--ink); color: var(--paper-light); }
+
+/* ---------- Quiz ---------- */
+.setup-grid {
+  display: grid;
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.setup-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--ink);
+  background: var(--paper-light);
+  cursor: pointer;
+}
+.chip.active { background: var(--aizome); color: #fff; border-color: var(--aizome); }
+
+.quiz-card {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.quiz-glyph {
+  font-family: 'Shippori Mincho', serif;
+  font-weight: 700;
+  font-size: 5rem;
+  background: var(--paper-light);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  width: 180px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 26px;
+  position: relative;
+}
+.quiz-glyph::before, .quiz-glyph::after { content:""; position:absolute; background: var(--paper-line); }
+.quiz-glyph::before { left: 50%; top: 10%; bottom: 10%; width: 1px; }
+.quiz-glyph::after { top: 50%; left: 10%; right: 10%; height: 1px; }
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 12px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.option-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.05rem;
+  padding: 16px;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--ink);
+  background: var(--paper-light);
+  cursor: pointer;
+}
+.option-btn:hover { border-color: var(--aizome); }
+.option-btn.correct { background: #3B6B4E; border-color: #3B6B4E; color: #fff; }
+.option-btn.wrong { background: var(--hanko); border-color: var(--hanko); color: #fff; }
+.option-btn[disabled] { cursor: default; }
+
+.score-bar {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin-top: 22px;
+}
+.score-bar b { color: var(--ink); }
+
+.result-panel {
+  text-align: center;
+  margin-top: 30px;
+}
+.result-panel .big-score {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 3rem;
+  color: var(--hanko);
+}
+
+/* ---------- Cara Menulis ---------- */
+.write-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 30px;
+  align-items: start;
+  margin-top: 10px;
+}
+
+@media (max-width: 760px) {
+  .write-layout { grid-template-columns: 1fr; }
+}
+
+.picker-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+  gap: 8px;
+}
+
+.picker-cell {
+  aspect-ratio: 1/1;
+  border: 1.5px solid var(--paper-line);
+  border-radius: var(--radius);
+  background: var(--paper-light);
+  font-family: 'Shippori Mincho', serif;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.picker-cell:hover { border-color: var(--aizome); }
+.picker-cell.selected { border-color: var(--hanko); background: var(--hanko-soft); color: var(--hanko); }
+
+.note-box {
+  margin-top: 16px;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  border-left: 3px solid var(--kinpaku);
+  padding-left: 12px;
+}
+
+.writer-panel {
+  position: sticky;
+  top: 90px;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--paper-light);
+  padding: 22px;
+  text-align: center;
+}
+
+.writer-current {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--hanko);
+  margin-bottom: 10px;
+  letter-spacing: 0.05em;
+}
+
+#writer-target {
+  width: 240px;
+  height: 240px;
+  margin: 0 auto 16px;
+  background-image:
+    linear-gradient(var(--paper-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--paper-line) 1px, transparent 1px);
+  background-size: 50% 50%;
+  border: 1.5px dashed var(--paper-line);
+  border-radius: var(--radius);
+}
+
+.writer-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.writer-status {
+  min-height: 20px;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+.writer-status.ok { color: #3B6B4E; font-weight: 600; }
+.writer-status.mistake { color: var(--hanko); font-weight: 600; }
+
+.writer-nav {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+/* ---------- Tablet & small desktop ---------- */
+@media (max-width: 760px) {
+  main { padding: 28px 16px 60px; }
+  .path-grid { grid-template-columns: 1fr; }
+  .tool-grid { grid-template-columns: 1fr 1fr; }
+  .options-grid { grid-template-columns: repeat(2, 1fr); max-width: 100%; }
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 520px) {
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.15rem; }
+  p.lead { font-size: 0.9rem; }
+
+  .nav-wrap {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 14px;
+    gap: 8px;
+  }
+  nav.main {
+    gap: 4px;
+    justify-content: center;
+  }
+  nav.main a {
+    font-size: 0.8rem;
+    padding: 8px 10px;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+  }
+
+  .kana-grid {
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    gap: 6px;
+  }
+  .kana-cell .glyph { font-size: 1.5rem; }
+  .kana-cell .romaji { font-size: 0.55rem; bottom: 2px; right: 3px; }
+
+  .filter-bar { gap: 5px; margin: 14px 0 20px; }
+  .filter-bar button { font-size: 0.72rem; padding: 6px 10px; }
+
+  .flashcard { width: 180px; height: 180px; }
+  .flashcard-face .glyph { font-size: 3.4rem; }
+  .flashcard-face .romaji { font-size: 1.3rem; }
+
+  .quiz-glyph { width: 140px; height: 140px; font-size: 3.5rem; }
+  .options-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .option-btn { font-size: 0.95rem; padding: 12px 10px; }
+  .score-bar { font-size: 0.78rem; gap: 14px; }
+
+  .picker-grid {
+    grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+    gap: 5px;
+  }
+  .picker-cell { font-size: 1rem; }
+
+  #writer-target { width: 200px; height: 200px; }
+  #writer-target canvas { max-width: 100%; height: auto; }
+  .writer-panel { padding: 14px; }
+  .writer-buttons .btn { font-size: 0.82rem; padding: 8px 12px; }
+
+  .chip { font-size: 0.72rem; padding: 7px 10px; }
+
+  .btn { font-size: 0.82rem; padding: 8px 14px; }
+  .icon-btn { width: 36px; height: 36px; font-size: 1rem; }
+
+  .result-panel .big-score { font-size: 2.4rem; }
+}
+
+/* ---------- Very small phones ---------- */
+@media (max-width: 360px) {
+  main { padding: 20px 12px 50px; }
+
+  .nav-wrap { padding: 8px 10px; gap: 6px; }
+  nav.main { gap: 2px; }
+  nav.main a { font-size: 0.72rem; padding: 6px 8px; min-height: 32px; }
+
+  h1 { font-size: 1.3rem; }
+
+  .kana-grid {
+    grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+    gap: 4px;
+  }
+  .kana-cell .glyph { font-size: 1.3rem; }
+  .kana-cell::before { top: 10%; bottom: 10%; }
+  .kana-cell::after { left: 10%; right: 10%; }
+
+  .flashcard { width: 150px; height: 150px; }
+  .flashcard-face .glyph { font-size: 2.8rem; }
+  .flashcard-face .romaji { font-size: 1.1rem; }
+
+  .quiz-glyph { width: 120px; height: 120px; font-size: 3rem; }
+  .options-grid { grid-template-columns: 1fr; }
+  .option-btn { font-size: 0.9rem; padding: 10px; }
+
+  #writer-target { width: 170px; height: 170px; }
+  #writer-target canvas { max-width: 100%; height: auto; }
+
+  .path-card { padding: 16px; }
+  .path-card .sample { font-size: 1.8rem; }
+
+  .tool-grid { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kuis — RizqiLab</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="kuis">
+<header class="site" id="site-header"></header>
+
+<main>
+  <p class="eyebrow">Uji hafalan</p>
+  <h1>Kuis pilihan ganda</h1>
+  <p class="lead">Pilih skrip dan tingkat kesulitan, lalu tebak romaji yang benar untuk tiap karakter. 10 soal per sesi.</p>
+
+  <div id="setup-view" class="setup-grid">
+    <div>
+      <h2 style="font-size:1rem;margin-bottom:8px">Skrip</h2>
+      <div class="setup-row" id="script-chips">
+        <button class="chip active" data-script="hiragana">Hiragana</button>
+        <button class="chip" data-script="katakana">Katakana</button>
+        <button class="chip" data-script="both">Campuran</button>
+      </div>
+    </div>
+    <div>
+      <h2 style="font-size:1rem;margin-bottom:8px">Cakupan karakter</h2>
+      <div class="setup-row" id="level-chips">
+        <button class="chip active" data-level="basic">Hanya dasar</button>
+        <button class="chip" data-level="basic-dakuten">Dasar + dakuten</button>
+        <button class="chip" data-level="all">Semua (termasuk yōon)</button>
+      </div>
+    </div>
+    <div>
+      <button class="btn primary" id="btn-start">Mulai kuis</button>
+    </div>
+  </div>
+
+  <div id="quiz-view" style="display:none">
+    <div class="score-bar">
+      <span>Soal <b id="q-index">1</b> / <b id="q-total">10</b></span>
+      <span>Benar: <b id="q-score">0</b></span>
+    </div>
+    <div class="quiz-card">
+      <div class="quiz-glyph" id="q-glyph">あ</div>
+      <div class="options-grid" id="q-options"></div>
+    </div>
+  </div>
+
+  <div id="result-view" class="result-panel" style="display:none">
+    <p class="eyebrow">Selesai</p>
+    <div class="big-score" id="r-score">0 / 10</div>
+    <p class="lead" id="r-message" style="margin:12px auto 24px"></p>
+    <button class="btn primary" id="btn-restart">Coba lagi</button>
+  </div>
+</main>
+
+<footer class="site" id="site-footer"></footer>
+<script src="js/data.js"></script>
+<script src="js/layout.js"></script>
+<script>
+(function () {
+  const TOTAL_QUESTIONS = 10;
+  let scriptChoice = 'hiragana';
+  let levelChoice = 'basic';
+  let pool = [];
+  let questions = [];
+  let qIndex = 0;
+  let score = 0;
+  let locked = false;
+
+  document.querySelectorAll('#script-chips .chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('#script-chips .chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      scriptChoice = chip.dataset.script;
+    });
+  });
+  document.querySelectorAll('#level-chips .chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('#level-chips .chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      levelChoice = chip.dataset.level;
+    });
+  });
+
+  function levelFilter(type) {
+    if (levelChoice === 'basic') return type === 'basic';
+    if (levelChoice === 'basic-dakuten') return type === 'basic' || type === 'dakuten' || type === 'handakuten';
+    return true;
+  }
+
+  function buildPool() {
+    let flat = [];
+    if (scriptChoice === 'hiragana' || scriptChoice === 'both') flat = flat.concat(HIRAGANA_FLAT);
+    if (scriptChoice === 'katakana' || scriptChoice === 'both') flat = flat.concat(KATAKANA_FLAT);
+    return flat.filter(c => levelFilter(c.type));
+  }
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function sample(arr, n) { return shuffle(arr).slice(0, n); }
+
+  function buildQuestions() {
+    pool = buildPool();
+    const count = Math.min(TOTAL_QUESTIONS, pool.length);
+    questions = sample(pool, count).map(correct => {
+      const distractors = sample(pool.filter(c => c.r !== correct.r), Math.min(3, pool.length - 1));
+      const options = shuffle([correct, ...distractors]);
+      return { correct, options };
+    });
+  }
+
+  function showQuestion() {
+    locked = false;
+    const q = questions[qIndex];
+    document.getElementById('q-glyph').textContent = q.correct.k;
+    document.getElementById('q-index').textContent = qIndex + 1;
+    document.getElementById('q-total').textContent = questions.length;
+    document.getElementById('q-score').textContent = score;
+
+    const optWrap = document.getElementById('q-options');
+    optWrap.innerHTML = '';
+    q.options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.textContent = opt.r;
+      btn.addEventListener('click', () => selectAnswer(btn, opt, q));
+      optWrap.appendChild(btn);
+    });
+  }
+
+  function selectAnswer(btn, opt, q) {
+    if (locked) return;
+    locked = true;
+    const isCorrect = opt.r === q.correct.r;
+    btn.classList.add(isCorrect ? 'correct' : 'wrong');
+    if (isCorrect) score++;
+    document.querySelectorAll('.option-btn').forEach(b => {
+      b.disabled = true;
+      if (b.textContent === q.correct.r) b.classList.add('correct');
+    });
+    document.getElementById('q-score').textContent = score;
+    setTimeout(() => {
+      qIndex++;
+      if (qIndex < questions.length) showQuestion(); else showResult();
+    }, 700);
+  }
+
+  function showResult() {
+    document.getElementById('quiz-view').style.display = 'none';
+    document.getElementById('result-view').style.display = 'block';
+    document.getElementById('r-score').textContent = `${score} / ${questions.length}`;
+    const pct = score / questions.length;
+    let msg = 'Terus berlatih, lama-lama otomatis hafal!';
+    if (pct >= 0.9) msg = 'Sangat bagus — hampir semua benar.';
+    else if (pct >= 0.6) msg = 'Lumayan, coba ulangi bagian yang masih salah.';
+    document.getElementById('r-message').textContent = msg;
+  }
+
+  function startQuiz() {
+    score = 0; qIndex = 0;
+    buildQuestions();
+    if (questions.length === 0) return;
+    document.getElementById('setup-view').style.display = 'none';
+    document.getElementById('result-view').style.display = 'none';
+    document.getElementById('quiz-view').style.display = 'block';
+    showQuestion();
+  }
+
+  document.getElementById('btn-start').addEventListener('click', startQuiz);
+  document.getElementById('btn-restart').addEventListener('click', () => {
+    document.getElementById('result-view').style.display = 'none';
+    document.getElementById('setup-view').style.display = 'grid';
+  });
+})();
+</script>
+</body>
+</html>
