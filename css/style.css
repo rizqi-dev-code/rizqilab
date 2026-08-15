@@ -148,6 +148,31 @@ footer.site {
   color: var(--ink-soft);
 }
 
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.footer-links a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--paper-line);
+  color: var(--ink-soft);
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.footer-links a:hover {
+  color: var(--paper-light);
+  border-color: var(--hanko);
+  background: var(--hanko);
+}
+
 /* ---------- Home page ---------- */
 .hero {
   display: grid;
